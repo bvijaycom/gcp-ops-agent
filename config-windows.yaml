@@ -1,0 +1,57 @@
+# Documentation available at https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/configuration
+logging:
+  receivers:
+    windows_event_log:
+      type: windows_event_log
+      channels: [System, Application, Security]
+    # <custom_log>: # logName in the output log, e.g. `logName: "projects/<project_id>/logs/<custom_log>"`
+    #   type: files
+    #   include_paths:
+    #   - <log_file_abs_path>
+    #   # record_log_file_path: true # add file path to the output log
+  processors:
+    logging_filter:
+      type: exclude_logs # https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/configuration#logging-processor-exclude-logs
+      match_any:
+      - 'severity = "NOTICE"'
+      - 'severity = "INFO"'
+      # - 'severity = "DEBUG"' # do not exist on Windows instances
+      # - 'severity = "DEFAULT"' # do not exist on Windows instances (need to filter out logs without the `severity` field)
+  service:
+    log_level: error # Verbosity for Ops Agent logging submodule's own logs
+    pipelines:
+      default_pipeline:
+        receivers: [windows_event_log]
+        processors: [logging_filter]
+metrics:
+  receivers:
+    hostmetrics:
+      type: hostmetrics
+      collection_interval: 5m
+    iis:
+      type: iis
+      collection_interval: 5m
+    mssql:
+      type: mssql
+      collection_interval: 5m
+  processors:
+    metrics_filter:
+      type: exclude_metrics # https://cloud.google.com/logging/docs/agent/ops-agent/configuration#metrics-processors
+      metrics_pattern:
+      # - agent.googleapis.com/agent/* # Agent (metrics still collected when added in the excluded metric list)
+      # - agent.googleapis.com/cpu/* # CPU
+      # - agent.googleapis.com/disk/* # Disk
+      # - agent.googleapis.com/iis/* # IIS (Microsoft Windows only)
+      # - agent.googleapis.com/interface/* # Interface
+      # - agent.googleapis.com/memory/* # Memory
+      # - agent.googleapis.com/mssql/* # MS SQL Server (Microsoft Windows only)
+      # - agent.googleapis.com/network/* # Nerwork
+      # - agent.googleapis.com/pagefile/* # Pagefile
+      # - agent.googleapis.com/processes/* # Processes
+      # - agent.googleapis.com/swap/* # Swap
+  service:
+    log_level: error # Verbosity for Ops Agent logging submodule's own logs
+    pipelines:
+      default_pipeline:
+        receivers: [hostmetrics, iis, mssql]
+        processors: [metrics_filter]
