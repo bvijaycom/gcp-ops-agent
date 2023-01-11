@@ -40,3 +40,4 @@ Note : in this tasks : you need to have a file where you can mention all the lin
 # sample ops agent repo terraform
 
 - https://github.com/terraform-google-modules/terraform-google-cloud-operations/tree/master/examples
+- https://registry.terraform.io/modules/terraform-google-modules/cloud-operations/google/latest/submodules/agent-policy
