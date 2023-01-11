@@ -36,3 +36,7 @@ Task 4 :
 - 5. Restart the OPS Agent service
 
 Note : in this tasks : you need to have a file where you can mention all the linux  server name or project name
+
+# sample ops agent repo terraform
+
+- https://github.com/terraform-google-modules/terraform-google-cloud-operations/tree/master/examples
